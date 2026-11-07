@@ -1,135 +1,224 @@
-# R3 Web API 自动化搭建系统
+# R3 漫剧自动化搭建系统 (Release Version)
 
-R3 通过常读端原生 OpenAPI 解析作品 ID、核验免费与付费渠道资格，再通过浏览器填写一站式搭剧任务及 IAA/IAP 配置。剧名检索使用常读免费漫剧列表页。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11%20x64-blue.svg)](README.md)
+[![Runtime](https://img.shields.io/badge/Node.js-24+-green.svg)](node/node.exe)
 
+R3 是面向短剧与漫剧投流行业打造的企业级一站式自动化搭建系统。系统通过常读端原生 OpenAPI 智能解析作品 ID，严格交叉核验免费与付费双渠道投放资格，并通过 Chrome DevTools Protocol (CDP) 驱动无干扰浏览器会话，自动化完成复制链接解析、搭剧子任务填单、ROI 阶梯系数匹配、IAA 激励视频及 IAP 付费模板的一站式配置与提交。
 
-## 环境与启动
+当前为**正式发布版本（Release Distribution）**，采用开箱即用设计，全套业务逻辑已完成代码加密混淆与依赖压缩，免除复杂的开发环境配置，双击即可直接运行。
 
-双击根目录的 **[R3-Web.exe](R3-Web.exe)** 启动桌面控制台。调试浏览器、配置、开始与停止均在软件内操作。
+---
 
-`.exe` 是桌面启动器，请保留同目录的 `src/`、`node/`、`node_modules/`、`package.json`、`pnpm-lock.yaml` 和运行数据；不能只复制单个 EXE。首次准备开发环境时执行 `pnpm install`。项目使用 Node.js 24+，随附运行时位于 `node/node.exe`。
+## 一、系统架构 (Architecture)
 
-`R3-Web.exe` 直接拉起内置 `node/node.exe` 启动本地 HTTP/SSE 服务（`src/web/main.ts`），默认绑定 `127.0.0.1:3000` 并自动打开浏览器控制台。进程环境变量 `PORT` 可指定起始端口，占用时最多尝试 10 个端口；关闭服务窗口或收到退出信号时请求停止并等待在途任务收尾。
+### 1.1 系统分层设计
 
-维护命令：`pnpm test` 运行测试，`pnpm run typecheck` 检查类型，`pnpm run build:ui` 更新前端发布资源，`pnpm run build:exe` 使用 Windows 内置 C# 编译器重建启动器。
-
-### 磁盘占用优化（Windows / NTFS）
-
-`pnpm run size:check` 查看依赖及实际存储大小；`pnpm run size:optimize` 并使用 Windows 原生 NTFS 压缩降低 `node/`、`node_modules/` 的磁盘占用。脚本逐文件验证压缩前后的 SHA-256，保留所有运行、构建和测试依赖，不处理业务数据、配置、日志及源码。建议退出软件并停止依赖安装后执行。
-
-`pnpm run size:restore` 可解除这两个目录的压缩，缓存无需恢复。压缩由 Windows 透明读取，会增加少量解压 CPU 开销；资源管理器中的“大小”不因压缩变化，请查看“占用空间”。复制到不支持压缩的磁盘、重新安装依赖或打包 ZIP 后需重新评估实际占用。此命令优化本地磁盘占用，不裁剪发布包功能。
-
-结果表格使用虚拟滚动，日志按 100ms 批量追加。
-
-### OpenAPI 配置
-
-在项目根目录按 [.env.example](.env.example) 创建 `.env`：
-
-```dotenv
-CHANGDU_OPENAPI_SECRET_KEY=你的密钥
-CHANGDU_OPENAPI_FREE_DISTRIBUTOR_ID=免费渠道ID
-CHANGDU_OPENAPI_PAID_DISTRIBUTOR_ID=付费渠道ID
-```
-
-进程环境变量优先于 `.env`，修改凭据后需重启。未配置时解析器返回失败。
-
-### 浏览器与输入
-
-自动化连接 CDP **9224**。软件内的浏览器启动按钮使用独立数据目录 `%LOCALAPPDATA%\EdgeDebug9224`；请在调试实例中登录所需平台。会话有效期取决于平台。
-
-- 完整搭剧自动化始终需要已登录的搭剧复制任务页。
-- 输入含剧名时还需要常读免费漫剧列表页；纯 ID 输入通过 OpenAPI 识别。
-- 每行可输入剧名、漫剧 ID、抖音作品 ID 或无前缀数字。推荐标明 `漫剧ID：…` 或 `抖音作品ID：…`，多版本结果不自动猜选。
-
-控制台支持输入导入、去重、保存，复制链接配置、面板类别和 ROI 设置，以及停止、重试失败项、日志和 CSV 导出。面板类别为超超小额、超小额、小额、中额。
-
-## 当前业务流程
+R3 采用微内核、单进程高内聚的分层架构，核心分为启动器层、控制台服务层、自动化编排调度层、平台对接层以及核心数据审计层：
 
 ```mermaid
 flowchart TD
-    Input[剧名或 ID] --> Resolve[目录检索或端原生内容查询]
-    Resolve --> Eligibility[核对两渠道资格和作品身份]
-    Eligibility --> Stage[填写搭剧内容、ROI、IAA 与 IAP 配置并保存]
-    Stage --> Next[按实际容量继续或打开下一 Tab]
+    subgraph LauncherLayer["1. 桌面启动器层 (Desktop Launcher)"]
+        Launcher["R3-Web.exe (C# WinExe / Job Object)"]
+        NodeRuntime["node/node.exe (内置 Node.js 24+ 原生运行时)"]
+        Launcher -->|"拉起并绑定进程生命周期"| NodeRuntime
+    end
+
+    subgraph ServiceLayer["2. 控制台服务与通信层 (Web Console & SSE)"]
+        HttpServer["本地 HTTP 服务 (Native Node Loopback: 127.0.0.1:3000+)"]
+        SSEHub["增量 SSE 事件总线 (带序号快照 / 增量补齐 / 心跳保活)"]
+        WebUI["现代化 Web 控制台 (React 19 + Tailwind CSS + Lucide)"]
+        NodeRuntime --> HttpServer
+        HttpServer <--> SSEHub
+        HttpServer --> WebUI
+    end
+
+    subgraph CoreEngine["3. 自动化编排与调度层 (Orchestration Engine)"]
+        SingleLock["单实例互斥锁 (PID / UUID 令牌防护)"]
+        Coordinator["多任务流水线协调器 (槽位分配 / 容量管理 / 自动递补)"]
+        AuditSSOT["SQLite 权威状态账本 (事务原子落账 / 操作追溯)"]
+        HttpServer --> SingleLock
+        SingleLock --> Coordinator
+        Coordinator <--> AuditSSOT
+    end
+
+    subgraph PlatformLayer["4. 平台集成与驱动层 (Integration & Driver)"]
+        ChangduAPI["常读 OpenAPI (作品检索 / 免费与付费双渠道资格核验)"]
+        CDPDriver["CDP 自动化驱动 (Playwright Core / 后台静默会话: 9224)"]
+        AdPlatform["投放后台自动化 (任务命名 / 统一预算 / IAA/IAP / 整页 Upsert)"]
+        Coordinator --> ChangduAPI
+        Coordinator --> CDPDriver
+        CDPDriver --> AdPlatform
+    end
 ```
 
-缓存也必须通过当前两渠道资格和作品身份校验。搭剧 IAA 配置选择默认应用、主管账号、填写名称词包并选择第二个起始解锁选项；IAP 配置选择默认应用、主管账号、填写名称词包及目标充值模板。
+### 1.2 核心业务流程
 
-剧名候选中，确定的作品资格失败可继续下一候选；鉴权或分页异常停止当前输入的解析。常读解析失败保留槽位，由下一部递补；搭剧内容名称或商品选择连续三轮失败且已确认取消并放弃修改后，该剧移至本次待搭队列末尾，当前槽位立即由下一部递补。每部剧最多延期一次；队尾重试仍失败则记录该剧失败，商品选择耗尽的失败原因为“商品库选择失败”，避免无限循环。未能确认放弃修改、填单结果不确定和其他阻塞失败仍保留页面收尾保护。
+```mermaid
+flowchart TD
+    Start([用户录入剧名或作品ID]) --> InputCheck[输入合法性与去重校验]
+    InputCheck --> ConflictCheck{命中历史重复剧记录?}
+    ConflictCheck -- 是 --> SkipDuplicate[自动跳过搭剧并提示拦截]
+    ConflictCheck -- 否 --> ResolveAPI[常读 OpenAPI 目录与端原生内容检索]
+    
+    ResolveAPI --> EligibleCheck{双渠道资格与作品身份核验}
+    EligibleCheck -- 未发布/无授权/不一致 --> MarkUnavailable[标记不能搭建，槽位自动由后一部剧递补]
+    EligibleCheck -- 核验通过 --> PipeStage[分配至当前搭剧 Tab 槽位]
+    
+    PipeStage --> FillForm[自动化填写项目名称、ROI系数、IAA与IAP模板]
+    FillForm --> TabCapacity{当前搭剧 Tab 是否已搭满?}
+    TabCapacity -- 未搭满 --> NextItem[预解析下一部剧继续填入]
+    TabCapacity -- 已搭满/末页收尾 --> SubmitPage[提交整页 Upsert 并校验服务端响应]
+    
+    SubmitPage --> UpsertResult{提交业务响应确认}
+    UpsertResult -- 成功 --> CheckMoreUrls{是否存在下一条复制链接?}
+    CheckMoreUrls -- 是 --> OpenNewTab[轮询复制配置开启下一 Tab 继续]
+    CheckMoreUrls -- 否 --> FlowDone([全部任务搭建完成，落账并生成报告])
+    
+    UpsertResult -- 报告重复剧冲突 --> ExtractConflict[提取冲突剧ID并标记失败，从队列调取新剧递补后重提]
+```
 
-输入耗尽时，若当前页没有已填写结果、待处理冲突或不确定的填单结果，正常结束并保留复制模板；“没有可用候选”等单条失败仍显示在失败统计中，不再额外报程序运行异常。这也适用于前页已提交、末页输入全部解析失败，或选择失败已确认放弃修改的情况。填单结果不确定时，仍保留阻塞校验。
+### 1.3 发布版本目录结构
 
-搭剧页按实际可用子任务容量分批，配置上限 10，不能固定视为每页 10 个。每页搭满后自动点击“确认提交”，通过整页 upsert 接口的业务响应确认结果，成功后才按复制链接列表轮询打开下一 Tab。末页不足容量时，先移除末尾未使用的复制配置，再提交已搭剧目。
+```
+R3-auto/
+├── R3-Web.exe                   # 桌面启动器 (双击直接运行控制台)
+├── .env.example                 # OpenAPI 凭据配置模板
+├── LICENSE                      # 开源许可协议 (MIT)
+├── README.md                    # 本文档 (使用说明与架构概述)
+├── package.json                 # 生产依赖定义
+├── pnpm-lock.yaml               # 依赖锁定清单
+├── release-manifest.json        # 发布版本全量文件 SHA-256 指纹校验清单
+├── data/                        # 本地运行与配置数据目录 (支持 R3_DATA_DIR 覆盖)
+│   ├── drama_list.txt           # 待搭剧目/ID 默认输入源
+│   ├── .full_flow_success.json  # 成功标记
+│   └── r3_state.sqlite          # SQLite 权威配置源与运行历史账本
+├── node/                        # 内置独立运行环境 (免安装 Node)
+│   ├── node.exe                 # 随附 Node.js 24 运行引擎
+│   └── LICENSE                  # Node.js 许可证
+├── node_modules/                # 极简生产依赖包 (playwright-core, xlsx, zod)
+├── src/                         # 经过高强度混淆加密的运行时
+│   └── web/
+│       ├── main.ts              # 核心加密混淆单文件服务入口
+│       └── public/              # 编译压缩后的前端 Web 控制台单页资源
+│           ├── index.html       # 控制台入口 HTML
+│           └── assets/          # 优化构建的 JS Bundle 与 CSS 样式
+└── tools/                       # 运维与体积优化工具
+    ├── optimize_size.ps1        # Windows 原生 NTFS 透明压缩脚本
+    ├── write_release_manifest.ts# 发布清单校验脚本
+    └── launcher/WebLauncher.cs  # 桌面启动器 C# 源代码
+```
 
-若返回“剧目+抖音号已被其它任务创建过项目”，仅提取本次响应 `msg` 实际展示的重复剧 ID，去重后定位本页对应槽位，将这些原剧目标记失败，使用后续待搭剧按槽位顺序递补。待搭剧用尽后，从后向前删除剩余已展示冲突的子任务；本轮展示的冲突处理完才重新提交。未展示的剧目保持不动，后续提交返回新的重复剧时再处理。。删除后无可提交剧目时停止，不提交空任务。网络超时、未知业务错误或冲突 ID 无法匹配本页时停止，不自动重发。
+---
 
-流水线仅在当前槽位保存完成且本页尚未搭满时预解析下一项；满页时先处理提交结果。预解析仅查询作品身份和资格。
+## 二、使用说明 (User Guide)
 
-## 运行锁与停止
+### 2.1 环境要求
 
-- runner 通过单实例锁串行运行。释放时核对 PID 和唯一令牌；有效锁、损坏锁和遗留获取目录均阻断新运行。
-- 内容查询共享接口限流队列，最小请求间隔为 1000ms。临时故障最多请求 3 次，限流最多请求 4 次；鉴权错误不重试。
-- 停止信号贯通流水线、解析器、请求队列、退避和 fetch。`drain()` 等待在途解析收尾，runner 再释放锁，控制台才允许重启。
-- 已确认提交的页面不会在本次运行中重提；未知提交结果阻断当前运行，需人工核对平台。
+- **操作系统**：Windows 10 / Windows 11 (64位)
+- **免安装环境**：无需预先安装 Node.js、Python、Git 或构建工具，系统已内置 `node/node.exe` 完整独立运行时。
+- **推荐浏览器**：Microsoft Edge 或 Google Chrome（支持远程调试端口）。
 
-## 目录与运行数据
+### 2.2 快速启动
 
-| 目录或文件 | 用途 |
-| --- | --- |
-| [src/runner.ts](src/runner.ts) | 自动化编排 |
-| [src/coordinator/](src/coordinator/) | 作品解析、资格核验和流水线 |
-| [src/platform/](src/platform/) | 常读目录与 OpenAPI、CDP、搭剧填单和网络响应 |
-| [src/core/](src/core/) | 配置、路径、ID 解析、缓存、运行锁、冲突保护和日志 |
-| [src/infra/](src/infra/) | 定位器、字段映射、状态机和性能分析基础设施 |
-| [src/web/](src/web/) | HTTP/SSE 控制台服务、启动入口和前端 |
-| [tests/](tests/) | 单元与集成测试，统一入口 `tests/run_all_tests.ts` |
-| [tools/](tools/) | 桌面启动器构建和隔离复审脚本 |
+1. 下载或解压完整的发布包目录。
+2. 保持目录结构完整（请勿单独移动 `R3-Web.exe`，它依赖同级 `node/`、`src/` 与 `node_modules/`）。
+3. 双击根目录下的 **`R3-Web.exe`**。
+4. 程序将自动拉起内置服务并在默认浏览器中打开控制台页面：`http://127.0.0.1:3000`（端口被占用时自动顺延）。
+5. 控制台右上角提供服务健康度与运行状态，关闭启动器窗口即可优雅停止后台服务。
 
-运行数据默认在 `data/`，进程环境变量 `R3_DATA_DIR` 可更改数据根目录：
+### 2.3 OpenAPI 密钥配置
 
-| 文件 | 内容 |
-| --- | --- |
-| `drama_list.txt` | 剧名或 ID，每行一项（兼容旧版 `搭链接.txt`） |
-| `full_flow_unified.run.lock` | 单实例锁 |
-| `.full_flow_success.json` | 成功标记 |
-| `logs/` | 按运行 ID 分隔的 JSONL、文本日志和性能报告 |
-| `r3_state.sqlite` | 事务配置、运行账本与待核对操作；不用于续跑 |
+首次使用前，请在项目根目录下复制一份 `.env.example` 并重命名为 `.env`：
 
-每次执行生成独立 `runId`，服务进程另有 `processSessionId`。日志、事件、性能报告、页提交记录按 runId 关联；缓存与指标按次隔离。控制台结果采用带序号的增量 SSE，同步缺口时重新读取快照，慢连接使用有界队列。结果状态区分等待、运行、已填写待提交、提交中、已提交、失败和结果不确定；仅整页响应确认成功才计入成功数，结果不确定的条目不进入“重试失败项”。
+```dotenv
+# 常读 OpenAPI 接口密钥
+CHANGDU_OPENAPI_SECRET_KEY=your_secret_key_here
 
-搭剧子任务保存失败时，文本错误日志包含实际页面提示、字段名称和保存接口状态；同次运行的 JSONL 中可搜索 `STAGE_SAVE_FAILURE`，查看子任务序号、作品 ID、保存前后的可见错误、字段控件标识、接口 HTTP 状态、业务码、返回消息及断网/超时状态。`existedBeforeSubmit` 表示该提示在点击保存前已存在，用于排查旧提示干扰；无匹配请求时明确记录未观察到保存请求。诊断不记录表单值、请求正文、请求头或 URL 查询参数，保存结果不确定时仍停止递补与提交。
+# 免费渠道分销商 ID (纯数字)
+CHANGDU_OPENAPI_FREE_DISTRIBUTOR_ID=12345678
 
-首次保存后，数据库配置是读取依据，修改配置请在桌面控制台保存。历史运行与待核对操作可以在界面查询；重启不续跑旧任务，也不自动重发不确定操作。后台致命故障会拒绝新运行并尽量排空后退出。
+# 付费渠道分销商 ID (纯数字)
+CHANGDU_OPENAPI_PAID_DISTRIBUTOR_ID=87654321
+```
 
-## 验证与工具边界
+> **说明**：进程环境变量优先级高于 `.env` 文件。修改配置后请重启 `R3-Web.exe` 使配置生效。
 
-构建采用仅保留最新版本的策略：`pnpm run build:ui` 和 `pnpm run build:exe` 会清空并重建 `src/web/public/`，删除历史哈希资源与旧版静态文件。该目录仅用于构建产物，不应存放手工维护文件。构建生成 Vite 资源映射和根目录 `release-manifest.json`，记录当前源码、资源、启动器、Node 与依赖锁文件（`pnpm-lock.yaml`）的 SHA-256 校验值及统一版本指纹。清单不包含业务 data；本地不保留旧版本或回滚副本，需要回滚时使用外部完整发布包备份。
+### 2.4 浏览器自动化环境准备 (CDP 9224)
 
-2026-10-01 P1/P2 架构升级后：**232 项测试全部通过，类型检查和前端构建通过**；覆盖增量 SSE、慢连接、崩溃审计和发布前端状态恢复，全部模拟业务操作。
+自动化引擎通过 CDP（端口 **9224**）连接调试浏览器实例。软件使用独立数据目录（默认位于 `%LOCALAPPDATA%\EdgeDebug9224`），与日常使用的浏览器数据完全隔离：
 
-2026-09-26 第一批升级后的代码验证：**145 项测试通过、0 失败，类型检查通过**。数量以实际输出为准。统一测试入口使用临时数据目录；单测也须隔离 `R3_DATA_DIR`，模拟外部操作，避免修改业务数据。
+1. **一键启动调试浏览器**：在 Web 控制台的“环境检查”卡片中，点击“启动调试浏览器”按钮，系统将自动以调试参数拉起浏览器。
+2. **登录业务平台**：在拉起的调试浏览器中登录以下必要平台：
+   - 包含复制链接的投放/搭剧页面（如巨量引擎一站式搭剧页）。
+   - （如输入含剧名）常读免费漫剧列表页。
+3. **环境检测**：在控制台中点击“刷新环境检查”，确认 CDP 9224 连接、Cookie 与必要页面状态全部为“就绪”。
 
-- [tools/review_changdu_api.ts](tools/review_changdu_api.ts)：隔离验证作品查询、两渠道资格核验与长 ID 精度，全部 HTTP 模拟。
+### 2.5 控制台核心操作指南
 
-端原生授权目前确认 `2` 为无授权、`4` 为普通授权，仅放行 `4`；未知值保守阻断。
+| 功能模块 | 操作说明 |
+| :--- | :--- |
+| **剧目输入** | 每行支持输入**剧名**、**漫剧 ID** 或 **抖音作品 ID**。支持输入导入、批量去重与格式校验。推荐输入带有明确前缀如 `漫剧ID：76800...` 或 `抖音作品ID：76800...`。 |
+| **搭剧复制链接** | 填入标准搭剧模板复制链接（如 `https://usergrowth.com.cn/onestop/ad/ad_create/copy`），多链接时系统在当前 Tab 搭满后自动轮询开启下一 Tab。 |
+| **全域 ROI 系数** | 设置统一正实数 ROI 系数（默认 `1.0`），系统自动依据面板类别进行阶梯换算。 |
+| **面板类别** | 下拉选择匹配的投放档位：`超超小额`、`超小额`、`小额`、`中额`。 |
+| **任务名称前缀** | 自定义任务命名前缀（例如 `R3-漫剧-次新`），系统自动按 `-1`、`-2` 自增拼接序号。 |
+| **项目日预算** | 设定统一日预算（支持 `300 ~ 9999999.99` 元，低于 300 自动校正为 300）。 |
+| **开始 / 停止** | 点击“开始搭建”执行全自动流水线。运行中支持随时点击“优雅停止”，系统将等待当前在途请求安全收尾并释放单实例锁。 |
+| **重试失败项** | 任务结束后，对于因网络超时或暂时性限流失败的剧目，支持一键将失败项重新加入待搭队列重跑。 |
+| **导出数据** | 支持一键导出本次运行的明细 CSV 表格，或在日志看板中下载实时诊断日志。 |
 
-## 参数校验
+### 2.6 磁盘空间优化 (NTFS Compression)
 
-启动与配置保存使用 Zod 运行时校验：输入必须为非空字符串列表（长 ID 不接收数字），复制链接须为 `https://usergrowth.com.cn/onestop/ad/ad_create/copy` 页面，ROI 须为有限正十进制数，面板须为四种支持类别之一。非法 JSON、未知参数及已删除的续搭参数返回 HTTP 400；配置先整体校验再写入。OpenAPI 在无损 JSON 解码后校验响应结构和分页标记，保留既有资格与作品身份检查。
+随附的 Windows PowerShell 优化脚本可对 `node/` 及 `node_modules/` 目录应用 Windows 原生 NTFS 透明压缩，在不损失任何文件完整性和运行性能的前提下显著缩减磁盘空间占用：
 
-## 故障处理
+```powershell
+# 查看当前存储占用
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/optimize_size.ps1
 
-| 现象 | 处理 |
-| --- | --- |
-| CDP 9224 连接失败 | 启动调试浏览器，确认所需页面已登录 |
-| 未发布、不可投或授权未知 | 核对该版本在两个渠道的状态；未知枚举不猜测放行 |
-| 两渠道作品 ID 不一致 | 核对 book_id 和两个渠道返回的 playlet_id |
-| 分页重复、提前结束或截断 | 核实完整作品查询结果后再运行 |
-| 另一个实例仍在运行 | 等待其收尾，不删除有效锁 |
-| 搭剧阻塞或任务中止 | 核对平台已完成内容，整理剩余输入后启动新任务 |
+# 应用 NTFS 压缩 (逐文件校验 SHA-256)
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/optimize_size.ps1 -Apply
 
-## 许可证
+# 解除压缩
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/optimize_size.ps1 -UndoCompression
+```
 
-版权所有 (c) 2026 Leker Huang。保留所有权利。
+---
 
-根据 [MIT](LICENSE) 许可证授权。
+## 三、常见故障排查 (Troubleshooting)
+
+| 异常现象 | 可能原因 | 解决对策 |
+| :--- | :--- | :--- |
+| **提示无法连接 CDP 9224** | 调试浏览器未启动或端口被占用 | 点击控制台“启动调试浏览器”按钮，或检查端口 9224 是否被第三方程序占用。 |
+| **剧目提示“不能搭建：未发布/无授权”** | 常读 OpenAPI 返回该剧未发布或授权状态非放行代码 | 核实该剧在常读平台的发布状态与版权授权等级。系统严格保障投放安全，不猜测放行未知状态。 |
+| **提示“另一个实例仍在运行”** | 存在未退出的后台进程或残留锁文件 | 检查任务栏或任务管理器中是否有正在运行的 `R3-Web.exe` / `node.exe`。确认退出后系统将自动释放锁。 |
+| **剧目报“访问速度过快 / QPS 超限”** | 触发平台接口频控 | 系统已内置指数退避重试和自动延期重试机制（最多延期 2 次），通常会自动恢复，无需人工干预。 |
+| **搭剧页面提交返回“已被其他任务创建”** | 平台已存在相同剧目 + 抖音号的项目 | 系统会自动提取冲突剧 ID，将其移出当前 Tab 并由后续待搭剧递补后重新提交。 |
+
+---
+
+## 四、许可证 (License)
+
+本项目发布版本根据 **MIT 许可证** 授权开源。
+
+```
+Copyright (c) 2026 Leker Huang. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

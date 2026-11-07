@@ -1,0 +1,8 @@
+.env
+data/r3_state.sqlite*
+data/logs/
+data/*.lock*
+data/conflict_dramas.json
+*.tmp
+.DS_Store
+Thumbs.db
