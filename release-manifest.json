@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "version": "09f89abac8513771",
-  "contentSha256": "09f89abac851377163212ca0f337e7cacab12b97d881e2f609f979092d0e3dd1",
-  "builtAt": "2026-11-07T14:20:46.950Z",
+  "version": "8909086143e2815d",
+  "contentSha256": "8909086143e2815d39af4f00f65d25aca9087cb2750d9094790b6174c9718b8c",
+  "builtAt": "2026-11-07T14:57:45.923Z",
   "retention": "latest-only",
   "rollback": {
     "available": false,
@@ -32,8 +32,8 @@
     },
     {
       "path": "src/web/main.ts",
-      "bytes": 1488806,
-      "sha256": "7b653de8503e5e4c9e103c8dc660e0e5038911dc2995eb69a4c43841a5569ff7"
+      "bytes": 1497581,
+      "sha256": "e44201a3c40943873a6f74442f582f6abaf3d0ef9a4c2776a39e794d2070f64b"
     },
     {
       "path": "src/web/public/.vite/manifest.json",
@@ -57,8 +57,13 @@
     },
     {
       "path": "tools/launcher/WebLauncher.cs",
-      "bytes": 4505,
-      "sha256": "3350f8c469ae0c0afcdae88157a39395dbc4d842cc4a142f4cd6181a50cf01a9"
+      "bytes": 5168,
+      "sha256": "d7b4c1831b3eb8417b1dcf8a967751f04bd3e01e90024aedfcf0bf2b1170429f"
+    },
+    {
+      "path": "启动.bat",
+      "bytes": 1093,
+      "sha256": "d8471eb1689b80aab608f8aac2027acacc548150fe231b0edd1088c4546882ab"
     }
   ]
 }

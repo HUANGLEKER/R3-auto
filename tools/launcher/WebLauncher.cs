@@ -98,6 +98,16 @@ namespace R3Web
                     if (child == null) throw new InvalidOperationException("无法启动本地 Web 服务进程");
                     if (job != IntPtr.Zero) AssignProcessToJobObject(job, child.Handle);
                     child.WaitForExit();
+                    if (child.ExitCode != 0)
+                    {
+                        MessageBox.Show(
+                            "本地 Web 服务异常退出 (退出码: " + child.ExitCode + ")。\n\n" +
+                            "排查建议：\n" +
+                            "1. 可双击根目录下的【启动.bat】查看控制台详细报错；\n" +
+                            "2. 检查默认端口 3000 是否被占用；\n" +
+                            "3. 检查 data\\ 目录下的错误日志 (startup_error.log)。",
+                            "服务已退出", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
             catch (Exception error)
