@@ -1,0 +1,403 @@
+{
+  "runId": "2026-11-05T01-30-11-509Z_pid1048_325a711e-7efb-416e-876f-bce68fe8ccd6",
+  "generatedAt": "2026-11-05T01:57:22.550Z",
+  "totalWallClockMs": 17325.57,
+  "totalProfiledSpanMs": 76033.31,
+  "spanCount": 34,
+  "categoryBreakdown": [
+    {
+      "category": "STAGE",
+      "count": 16,
+      "totalMs": 39113.96,
+      "avgMs": 2444.62,
+      "minMs": 4.82,
+      "maxMs": 11356.92,
+      "p50Ms": 1043.08,
+      "p90Ms": 11356.61,
+      "p99Ms": 11356.92,
+      "percentOfTotal": 225.76
+    },
+    {
+      "category": "OTHER",
+      "count": 2,
+      "totalMs": 31391.85,
+      "avgMs": 15695.93,
+      "minMs": 14066.57,
+      "maxMs": 17325.28,
+      "p50Ms": 17325.28,
+      "p90Ms": 17325.28,
+      "p99Ms": 17325.28,
+      "percentOfTotal": 181.19
+    },
+    {
+      "category": "RESOLVER",
+      "count": 2,
+      "totalMs": 5403.63,
+      "avgMs": 2701.81,
+      "minMs": 2701.74,
+      "maxMs": 2701.89,
+      "p50Ms": 2701.89,
+      "p90Ms": 2701.89,
+      "p99Ms": 2701.89,
+      "percentOfTotal": 31.19
+    },
+    {
+      "category": "PAGE",
+      "count": 1,
+      "totalMs": 117.56,
+      "avgMs": 117.56,
+      "minMs": 117.56,
+      "maxMs": 117.56,
+      "p50Ms": 117.56,
+      "p90Ms": 117.56,
+      "p99Ms": 117.56,
+      "percentOfTotal": 0.68
+    },
+    {
+      "category": "DOM",
+      "count": 1,
+      "totalMs": 5.3,
+      "avgMs": 5.3,
+      "minMs": 5.3,
+      "maxMs": 5.3,
+      "p50Ms": 5.3,
+      "p90Ms": 5.3,
+      "p99Ms": 5.3,
+      "percentOfTotal": 0.03
+    },
+    {
+      "category": "FSM",
+      "count": 12,
+      "totalMs": 1.01,
+      "avgMs": 0.08,
+      "minMs": 0.02,
+      "maxMs": 0.27,
+      "p50Ms": 0.08,
+      "p90Ms": 0.11,
+      "p99Ms": 0.27,
+      "percentOfTotal": 0.01
+    }
+  ],
+  "topSlowestSpans": [
+    {
+      "name": "full_flow_run",
+      "category": "OTHER",
+      "count": 1,
+      "totalMs": 17325.28,
+      "avgMs": 17325.28,
+      "minMs": 17325.28,
+      "maxMs": 17325.28,
+      "p50Ms": 17325.28,
+      "p90Ms": 17325.28,
+      "p99Ms": 17325.28
+    },
+    {
+      "name": "item_1:7699794990158841865",
+      "category": "OTHER",
+      "count": 1,
+      "totalMs": 14066.57,
+      "avgMs": 14066.57,
+      "minMs": 14066.57,
+      "maxMs": 14066.57,
+      "p50Ms": 14066.57,
+      "p90Ms": 14066.57,
+      "p99Ms": 14066.57
+    },
+    {
+      "name": "stage.fill_task_reopen_retry",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 11356.92,
+      "avgMs": 11356.92,
+      "minMs": 11356.92,
+      "maxMs": 11356.92,
+      "p50Ms": 11356.92,
+      "p90Ms": 11356.92,
+      "p99Ms": 11356.92
+    },
+    {
+      "name": "stage.fill_task",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 11356.61,
+      "avgMs": 11356.61,
+      "minMs": 11356.61,
+      "maxMs": 11356.61,
+      "p50Ms": 11356.61,
+      "p90Ms": 11356.61,
+      "p99Ms": 11356.61
+    },
+    {
+      "name": "stage.fill_iap_config",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 3953.1,
+      "avgMs": 3953.1,
+      "minMs": 3953.1,
+      "maxMs": 3953.1,
+      "p50Ms": 3953.1,
+      "p90Ms": 3953.1,
+      "p99Ms": 3953.1
+    },
+    {
+      "name": "stage.fill_iaa_config",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 3828.91,
+      "avgMs": 3828.91,
+      "minMs": 3828.91,
+      "maxMs": 3828.91,
+      "p50Ms": 3828.91,
+      "p90Ms": 3828.91,
+      "p99Ms": 3828.91
+    },
+    {
+      "name": "pipeline.wait_item_1:7699794990158841865",
+      "category": "RESOLVER",
+      "count": 1,
+      "totalMs": 2701.89,
+      "avgMs": 2701.89,
+      "minMs": 2701.89,
+      "maxMs": 2701.89,
+      "p50Ms": 2701.89,
+      "p90Ms": 2701.89,
+      "p99Ms": 2701.89
+    },
+    {
+      "name": "resolver.resolve",
+      "category": "RESOLVER",
+      "count": 1,
+      "totalMs": 2701.74,
+      "avgMs": 2701.74,
+      "minMs": 2701.74,
+      "maxMs": 2701.74,
+      "p50Ms": 2701.74,
+      "p90Ms": 2701.74,
+      "p99Ms": 2701.74
+    },
+    {
+      "name": "prepare_stage_copy_page",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 2657.18,
+      "avgMs": 2657.18,
+      "minMs": 2657.18,
+      "maxMs": 2657.18,
+      "p50Ms": 2657.18,
+      "p90Ms": 2657.18,
+      "p99Ms": 2657.18
+    },
+    {
+      "name": "stage.select_drama_by_id",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 1769.84,
+      "avgMs": 1769.84,
+      "minMs": 1769.84,
+      "maxMs": 1769.84,
+      "p50Ms": 1769.84,
+      "p90Ms": 1769.84,
+      "p99Ms": 1769.84
+    },
+    {
+      "name": "wait_stage_copy_page_ready",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 1664.73,
+      "avgMs": 1664.73,
+      "minMs": 1664.73,
+      "maxMs": 1664.73,
+      "p50Ms": 1664.73,
+      "p90Ms": 1664.73,
+      "p99Ms": 1664.73
+    },
+    {
+      "name": "stage.wait_exact_drama_search_result",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 1043.08,
+      "avgMs": 1043.08,
+      "minMs": 1043.08,
+      "maxMs": 1043.08,
+      "p50Ms": 1043.08,
+      "p90Ms": 1043.08,
+      "p99Ms": 1043.08
+    },
+    {
+      "name": "stage.clear_drama_search",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 554.19,
+      "avgMs": 554.19,
+      "minMs": 554.19,
+      "maxMs": 554.19,
+      "p50Ms": 554.19,
+      "p90Ms": 554.19,
+      "p99Ms": 554.19
+    },
+    {
+      "name": "stage.fill_roi_ratio",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 306.93,
+      "avgMs": 306.93,
+      "minMs": 306.93,
+      "maxMs": 306.93,
+      "p50Ms": 306.93,
+      "p90Ms": 306.93,
+      "p99Ms": 306.93
+    },
+    {
+      "name": "stage.open_subtask",
+      "category": "STAGE",
+      "count": 1,
+      "totalMs": 303.75,
+      "avgMs": 303.75,
+      "minMs": 303.75,
+      "maxMs": 303.75,
+      "p50Ms": 303.75,
+      "p90Ms": 303.75,
+      "p99Ms": 303.75
+    }
+  ],
+  "bottlenecks": [
+    {
+      "name": "full_flow_run",
+      "category": "OTHER",
+      "durationMs": 17325.28,
+      "timestamp": 1614387.4358,
+      "metadata": {
+        "runId": "2026-11-05T01-30-11-509Z_pid1048_325a711e-7efb-416e-876f-bce68fe8ccd6",
+        "profileId": "2026-11-05T01-30-11-509Z_pid1048_325a711e-7efb-416e-876f-bce68fe8ccd6",
+        "successCount": 0,
+        "failedCount": 0,
+        "untouchedCount": 9
+      },
+      "impactScore": 100
+    },
+    {
+      "name": "item_1:7699794990158841865",
+      "category": "OTHER",
+      "durationMs": 14066.57,
+      "timestamp": 1617309.8949,
+      "metadata": {
+        "index": 1,
+        "total": 500,
+        "keyword": "7699794990158841865",
+        "ok": true,
+        "seriesId": "7699791372663917630",
+        "douyinId": "7699794990158841865"
+      },
+      "impactScore": 81.19
+    },
+    {
+      "name": "stage.fill_task_reopen_retry",
+      "category": "STAGE",
+      "durationMs": 11356.92,
+      "timestamp": 1620017.118,
+      "metadata": {
+        "subtaskIndex": 1,
+        "douyinId": "7699794990158841865",
+        "ok": true,
+        "round": 1
+      },
+      "impactScore": 65.55
+    },
+    {
+      "name": "stage.fill_task",
+      "category": "STAGE",
+      "durationMs": 11356.61,
+      "timestamp": 1620017.3603,
+      "metadata": {
+        "subtaskIndex": 1,
+        "douyinId": "7699794990158841865",
+        "ok": true
+      },
+      "impactScore": 65.55
+    },
+    {
+      "name": "stage.fill_iap_config",
+      "category": "STAGE",
+      "durationMs": 3953.1,
+      "timestamp": 1626659.3001,
+      "metadata": {
+        "paidTemplate": "超超小额",
+        "ok": true
+      },
+      "impactScore": 22.82
+    },
+    {
+      "name": "stage.fill_iaa_config",
+      "category": "STAGE",
+      "durationMs": 3828.91,
+      "timestamp": 1622830.2601,
+      "metadata": {
+        "ok": true
+      },
+      "impactScore": 22.1
+    },
+    {
+      "name": "pipeline.wait_item_1:7699794990158841865",
+      "category": "RESOLVER",
+      "durationMs": 2701.89,
+      "timestamp": 1617311.0593,
+      "metadata": {
+        "index": 1,
+        "keyword": "7699794990158841865",
+        "ok": true,
+        "wasPrefetched": false,
+        "waitDurationMs": 2701.12,
+        "totalResolveDurationMs": 2701.86,
+        "overlapSavedMs": 0
+      },
+      "impactScore": 15.59
+    },
+    {
+      "name": "resolver.resolve",
+      "category": "RESOLVER",
+      "durationMs": 2701.74,
+      "timestamp": 1617311.1763,
+      "metadata": {
+        "keyword": "7699794990158841865",
+        "ok": true
+      },
+      "impactScore": 15.59
+    },
+    {
+      "name": "prepare_stage_copy_page",
+      "category": "STAGE",
+      "durationMs": 2657.18,
+      "timestamp": 1614637.8799,
+      "metadata": {
+        "targetUrl": "https://usergrowth.com.cn/onestop/ad/ad_create/copy?_app_id=796433&ad_platform=toutiao&id=73789042",
+        "ok": true,
+        "capacity": 10
+      },
+      "impactScore": 15.34
+    },
+    {
+      "name": "stage.select_drama_by_id",
+      "category": "STAGE",
+      "durationMs": 1769.84,
+      "timestamp": 1620327.2138,
+      "metadata": {
+        "dramaId": "7699794990158841865",
+        "ok": true,
+        "retry": 1
+      },
+      "impactScore": 10.22
+    }
+  ],
+  "lockContention": {
+    "totalLockRequests": 0,
+    "totalQueueWaitMs": 0,
+    "totalHoldMs": 0,
+    "maxQueueWaitMs": 0,
+    "avgQueueWaitMs": 0
+  },
+  "metadata": {
+    "keywordCount": 500,
+    "copyPageUrlCount": 4,
+    "roiRatio": "1.08"
+  }
+}

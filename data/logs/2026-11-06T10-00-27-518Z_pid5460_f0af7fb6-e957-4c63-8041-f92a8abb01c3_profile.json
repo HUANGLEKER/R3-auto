@@ -1,0 +1,84 @@
+{
+  "runId": "2026-11-06T10-00-27-518Z_pid5460_f0af7fb6-e957-4c63-8041-f92a8abb01c3",
+  "generatedAt": "2026-11-06T10:00:28.717Z",
+  "totalWallClockMs": 13.14,
+  "totalProfiledSpanMs": 14.78,
+  "spanCount": 4,
+  "categoryBreakdown": [
+    {
+      "category": "OTHER",
+      "count": 4,
+      "totalMs": 14.78,
+      "avgMs": 3.7,
+      "minMs": 0.27,
+      "maxMs": 12.83,
+      "p50Ms": 0.97,
+      "p90Ms": 12.83,
+      "p99Ms": 12.83,
+      "percentOfTotal": 112.48
+    }
+  ],
+  "topSlowestSpans": [
+    {
+      "name": "full_flow_run",
+      "category": "OTHER",
+      "count": 1,
+      "totalMs": 12.83,
+      "avgMs": 12.83,
+      "minMs": 12.83,
+      "maxMs": 12.83,
+      "p50Ms": 12.83,
+      "p90Ms": 12.83,
+      "p99Ms": 12.83
+    },
+    {
+      "name": "item_3:剧C",
+      "category": "OTHER",
+      "count": 1,
+      "totalMs": 0.97,
+      "avgMs": 0.97,
+      "minMs": 0.97,
+      "maxMs": 0.97,
+      "p50Ms": 0.97,
+      "p90Ms": 0.97,
+      "p99Ms": 0.97
+    },
+    {
+      "name": "item_1:剧A",
+      "category": "OTHER",
+      "count": 1,
+      "totalMs": 0.71,
+      "avgMs": 0.71,
+      "minMs": 0.71,
+      "maxMs": 0.71,
+      "p50Ms": 0.71,
+      "p90Ms": 0.71,
+      "p99Ms": 0.71
+    },
+    {
+      "name": "item_2:剧B",
+      "category": "OTHER",
+      "count": 1,
+      "totalMs": 0.27,
+      "avgMs": 0.27,
+      "minMs": 0.27,
+      "maxMs": 0.27,
+      "p50Ms": 0.27,
+      "p90Ms": 0.27,
+      "p99Ms": 0.27
+    }
+  ],
+  "bottlenecks": [],
+  "lockContention": {
+    "totalLockRequests": 0,
+    "totalQueueWaitMs": 0,
+    "totalHoldMs": 0,
+    "maxQueueWaitMs": 0,
+    "avgQueueWaitMs": 0
+  },
+  "metadata": {
+    "keywordCount": 3,
+    "copyPageUrlCount": 1,
+    "roiRatio": "1.08"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "r3-web-api",
+  "private": true,
+  "type": "module",
+  "main": "src/web/main.ts",
+  "packageManager": "pnpm@12.3.4",
+  "scripts": {
+    "start": "node src/web/main.ts",
+    "build:exe": "pnpm run build:ui && powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_launcher.ps1 && node tools/write_release_manifest.ts",
+    "build:ui": "vite build --config src/web/client/vite.config.ts && node tools/write_release_manifest.ts",
+    "test": "node tests/run_all_tests.ts",
+    "size:check": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/optimize_size.ps1",
+    "size:optimize": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/optimize_size.ps1 -Apply",
+    "size:restore": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/optimize_size.ps1 -UndoCompression",
+    "typecheck": "tsc --noEmit && tsc -p src/web/client/tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "playwright-core": "^1.62.1",
+    "xlsx": "^0.18.5",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "lucide-react": "^1.48.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1"
+  }
+}

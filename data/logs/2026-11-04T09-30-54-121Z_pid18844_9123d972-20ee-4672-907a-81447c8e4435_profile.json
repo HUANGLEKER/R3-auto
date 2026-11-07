@@ -1,0 +1,87 @@
+{
+  "runId": "2026-11-04T09-30-54-121Z_pid18844_9123d972-20ee-4672-907a-81447c8e4435",
+  "generatedAt": "2026-11-04T09:30:59.167Z",
+  "totalWallClockMs": 5018.59,
+  "totalProfiledSpanMs": 5020.65,
+  "spanCount": 4,
+  "categoryBreakdown": [
+    {
+      "category": "OTHER",
+      "count": 4,
+      "totalMs": 5020.65,
+      "avgMs": 1255.16,
+      "minMs": 0.6,
+      "maxMs": 5018.15,
+      "p50Ms": 1.26,
+      "p90Ms": 5018.15,
+      "p99Ms": 5018.15,
+      "percentOfTotal": 100.04
+    }
+  ],
+  "topSlowestSpans": [
+    {
+      "name": "full_flow_run",
+      "category": "OTHER",
+      "count": 1,
+      "totalMs": 5018.15,
+      "avgMs": 5018.15,
+      "minMs": 5018.15,
+      "maxMs": 5018.15,
+      "p50Ms": 5018.15,
+      "p90Ms": 5018.15,
+      "p99Ms": 5018.15
+    },
+    {
+      "name": "item_1:QPS_RETRY_DRAMA",
+      "category": "OTHER",
+      "count": 2,
+      "totalMs": 1.86,
+      "avgMs": 0.93,
+      "minMs": 0.6,
+      "maxMs": 1.26,
+      "p50Ms": 1.26,
+      "p90Ms": 1.26,
+      "p99Ms": 1.26
+    },
+    {
+      "name": "item_2:NORMAL_DRAMA",
+      "category": "OTHER",
+      "count": 1,
+      "totalMs": 0.64,
+      "avgMs": 0.64,
+      "minMs": 0.64,
+      "maxMs": 0.64,
+      "p50Ms": 0.64,
+      "p90Ms": 0.64,
+      "p99Ms": 0.64
+    }
+  ],
+  "bottlenecks": [
+    {
+      "name": "full_flow_run",
+      "category": "OTHER",
+      "durationMs": 5018.15,
+      "timestamp": 483.7271,
+      "metadata": {
+        "runId": "2026-11-04T09-30-54-121Z_pid18844_9123d972-20ee-4672-907a-81447c8e4435",
+        "profileId": "2026-11-04T09-30-54-121Z_pid18844_9123d972-20ee-4672-907a-81447c8e4435",
+        "successCount": 2,
+        "failedCount": 0,
+        "untouchedCount": 0
+      },
+      "impactScore": 99.99
+    }
+  ],
+  "lockContention": {
+    "totalLockRequests": 0,
+    "totalQueueWaitMs": 0,
+    "totalHoldMs": 0,
+    "maxQueueWaitMs": 0,
+    "avgQueueWaitMs": 0
+  },
+  "metadata": {
+    "keywordCount": 2,
+    "copyPageUrlCount": 1,
+    "roiRatio": "1"
+  }
+}

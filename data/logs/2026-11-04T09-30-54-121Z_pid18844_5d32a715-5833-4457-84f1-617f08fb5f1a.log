@@ -1,0 +1,10 @@
+[17:31:04] [INFO   ] 待处理输入: 2 条（含剧名，需漫剧列表页）
+[17:31:04] [STEP   ] === [输入 1/2] PREMATURE_PAGINATION_DRAMA -> [搭剧 Tab 1 / 子任务 1] (本 Tab 容量 4 个) ===
+[17:31:04] [WARN   ] 剧目【PREMATURE_PAGINATION_DRAMA】不能搭建: 常读 OpenAPI 分页提前结束 [错误码: DRAMA_UNAVAILABLE]
+[17:31:04] [STEP   ] 💡 排查建议: 作品匹配失败：常读 OpenAPI 未检索到该剧或分页提前结束，请核实剧名/短剧ID是否正确，以及作品是否处于已发布状态。
+[17:31:04] [RELOAD ] 触发自动递补策略：搭剧第 1 个链接第 1 个子任务保持待填，将由后一部剧递补搭建
+[17:31:04] [TIME   ] 本条失败耗时: 0.00s
+[17:31:04] [STEP   ] === [输入 2/2] NORMAL_DRAMA -> [搭剧 Tab 1 / 子任务 1] (本 Tab 容量 4 个) ===
+[17:31:04] [SUMMARY] 处理完成：输入总数 2 | 实际搭建成功 1 | 不能搭建 1
+[17:31:04] [ERR    ] 【不能搭建的剧目列表】:
+[17:31:04] [STEP   ] 1. 《PREMATURE_PAGINATION_DRAMA》: 常读 OpenAPI 分页提前结束
