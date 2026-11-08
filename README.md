@@ -1,4 +1,4 @@
-# R3 漫剧自动化搭建系统 (Release Version)
+# R3 漫剧自动化搭建系统
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11%20x64-blue.svg)](README.md)
@@ -6,7 +6,7 @@
 
 R3 是面向短剧与漫剧投流行业打造的企业级一站式自动化搭建系统。系统通过常读端原生 OpenAPI 智能解析作品 ID，严格交叉核验免费与付费双渠道投放资格，并通过 Chrome DevTools Protocol (CDP) 驱动无干扰浏览器会话，自动化完成复制链接解析、搭剧子任务填单、ROI 阶梯系数匹配、IAA 激励视频及 IAP 付费模板的一站式配置与提交。
 
-当前为**正式发布版本（Release Distribution）**，采用开箱即用设计，全套业务逻辑已完成代码加密混淆与依赖压缩，免除复杂的开发环境配置，双击即可直接运行。
+本项目采用开箱即用设计，免除复杂的开发环境配置，双击即可直接运行。
 
 ---
 
