@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "version": "8909086143e2815d",
-  "contentSha256": "8909086143e2815d39af4f00f65d25aca9087cb2750d9094790b6174c9718b8c",
-  "builtAt": "2026-11-07T14:57:45.923Z",
+  "version": "38c7d33f66c77b17",
+  "contentSha256": "38c7d33f66c77b1799d37b544cce9f6250b18faf2044874c91eb01fcff6affec",
+  "builtAt": "2026-11-08T12:02:37.057Z",
   "retention": "latest-only",
   "rollback": {
     "available": false,
@@ -32,8 +32,8 @@
     },
     {
       "path": "src/web/main.ts",
-      "bytes": 1497581,
-      "sha256": "e44201a3c40943873a6f74442f582f6abaf3d0ef9a4c2776a39e794d2070f64b"
+      "bytes": 1746691,
+      "sha256": "ae195a89fc594f27c5436e0c5186999ac1f30ce6194708c1d823da2fd3144063"
     },
     {
       "path": "src/web/public/.vite/manifest.json",
