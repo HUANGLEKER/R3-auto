@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "version": "38c7d33f66c77b17",
-  "contentSha256": "38c7d33f66c77b1799d37b544cce9f6250b18faf2044874c91eb01fcff6affec",
-  "builtAt": "2026-11-08T12:02:37.057Z",
+  "version": "deba91bc9c897b40",
+  "contentSha256": "deba91bc9c897b40fc24143be6aa4f8a2397f1da6ff9de8f3c70dc2d09b5e98f",
+  "builtAt": "2026-11-08T12:31:54.541Z",
   "retention": "latest-only",
   "rollback": {
     "available": false,
@@ -54,6 +54,11 @@
       "path": "src/web/public/index.html",
       "bytes": 820,
       "sha256": "1049482b2f9a39482d34b24913cc91d51664f323775bfb8dd6bb96d8022abe1f"
+    },
+    {
+      "path": "start.bat",
+      "bytes": 1093,
+      "sha256": "d8471eb1689b80aab608f8aac2027acacc548150fe231b0edd1088c4546882ab"
     },
     {
       "path": "tools/launcher/WebLauncher.cs",

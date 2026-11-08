@@ -17,7 +17,7 @@ function collect(relative: string): void {
 }
 
 const lockFile = fs.existsSync(path.join(root, 'pnpm-lock.yaml')) ? 'pnpm-lock.yaml' : 'package-lock.json';
-for (const entry of ['src', 'package.json', lockFile, 'tools/launcher', 'node/node.exe', 'R3-Web.exe', '启动.bat']) {
+for (const entry of ['src', 'package.json', lockFile, 'tools/launcher', 'node/node.exe', 'R3-Web.exe', '启动.bat', 'start.bat']) {
     if (fs.existsSync(path.join(root, entry))) collect(entry);
     else if (entry !== 'R3-Web.exe') throw new Error(`发布文件缺失：${entry}`);
 }
